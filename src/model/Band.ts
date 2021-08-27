@@ -1,9 +1,9 @@
 export class Band{
     constructor(
-    private id: string,
-    private name: string,
-    private music_genre: string,
-    private responsible: string
+    public id: string,
+    public name: string,
+    public music_genre: string,
+    public responsible: string
     ){}
 
    
