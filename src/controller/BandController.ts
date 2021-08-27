@@ -19,26 +19,39 @@ export class BandController{
             }
 
             const token = req.headers.authorization as string;
+
+            if(!token){
+                throw new Error("Insira o token de acesso")
+            }
            
-            await bandBusiness.create(input, token)
-            
-         
+            await bandBusiness.create(input, token)    
 
             res.status(200).send(`Banda Registrada com sucesso`);
 
         } catch(error){
+            if(error.message === "Duplicate entry 'U2' for key 'name'"){
+                res.status(400).send("Esta banda já existe no banco de dados")
+            }
             res.status(400).send({ error: error.message });
 
         }
     }
     async getBandById(req: Request, res: Response){
+        try{
         const id = req.params.id
+        const token = req.headers.authorization as string;
 
         if(!id){
             throw new Error("Insira o id da Banda")
         }
+        if(!token){
+            throw new Error("Insira o token de acesso")
+        }
 
-        const Result = await bandBusiness.getBandById(id)
-        
+        const Result = await bandBusiness.getBandById(id, token)
+        res.status(200).send(Result)
+    }catch(error){
+        res.status(400).send({error: error.message})
     }
+}
 }

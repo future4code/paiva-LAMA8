@@ -25,9 +25,9 @@ async getBandByIdData(id:string):Promise<Band>{
 
         const result = await this.getConnection()
         .select("*")
-        .where(id)
         .from(BandDatabase.TABLE_NAME)
-
+        .where({id})
+        
         return Band.toBandModel(result[0]);
     
 }
