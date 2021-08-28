@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { ConcertBusiness } from "../business/ConcertBusiness";
-import { Concert, ConcertInputDTO, ENUM_DAY } from "../model/Concert";
+import { Concert, ConcertInputDTO } from "../model/Concert";
 
  const concertBusiness = new ConcertBusiness()
 
@@ -8,12 +8,13 @@ export class ConcertController {
 
     async addConcert(req: Request, res: Response){
         try{
-            const input: ConcertInputDTO = {
-                week_day: req.body.week_day,
-                start_time: req.body.start_time,
-                end_time: req.body.end_time,
-                band_id: req.body.band_id
-            }
+                const day = req.body.week_day
+                const start_time = req.body.start_time
+                const end_time = req.body.end_time
+                const band_id = req.body.band_id
+            
+            const week_day = Concert.stringToConcertDay(day)
+            const input:ConcertInputDTO = {week_day, start_time, end_time, band_id}
             
             const token = req.headers.authorization as string;
 
@@ -35,17 +36,10 @@ export class ConcertController {
             if(!input.week_day){
                 throw new Error("Preencha o dia da semana")
             }
-
-            // if(input.week_day !== ENUM_DAY.SEXTA && ENUM_DAY.SABADO && ENUM_DAY.DOMINGO){
-            //     throw new Error("Dia deve ser sexta, sábado ou domingo")
-            // }
-
-      
+             
            await concertBusiness.add(input, token)
 
-            res.send(200).send("Show adicionado com sucesso")
-
-
+            res.status(201).send("Show adicionado com sucesso")
 
         }catch(error){
             res.status(400).send({ error: error.message });   
@@ -54,11 +48,13 @@ export class ConcertController {
 
     async getConcertByDay(req: Request, res: Response){
         try{
-            const day = req.params.day
+            const week_day = req.params.day
 
-            if(!day){
+            
+            if(!week_day){
                 throw new Error("Adicione o dia")
             }
+            const day = Concert.stringToConcertDay(week_day)
 
             const token = req.headers.authorization as string;
 

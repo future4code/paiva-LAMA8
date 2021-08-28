@@ -10,13 +10,13 @@ export class Concert{
         return new Concert(concert.id, concert.week_day, concert.start_time, concert.end_time, concert.band_id);
       }
 
-      static stringToConcertDay(input: string): ENUM_DAY {
+      public static stringToConcertDay(input: string): ENUM_DAY {
         switch (input) {
-          case "SEXTA":
+          case "sexta":
             return ENUM_DAY.SEXTA;
-          case "SÁBADO":
+          case "sábado":
             return ENUM_DAY.SABADO;
-          case "SÁBADO":
+          case "domingo":
             return ENUM_DAY.DOMINGO;
           default:
             throw new Error ("Show deverá ocorrer sexta , sábado ou domingo");
@@ -29,12 +29,12 @@ export class Concert{
 
 export enum ENUM_DAY{
     SEXTA = "SEXTA",
-    SABADO = "SABADO",
+    SABADO = "SÁBADO",
     DOMINGO = "DOMINGO"
 }
 
 export interface ConcertInputDTO{
-    week_day: string;
+    week_day: ENUM_DAY;
     start_time: number;
     end_time: number;
     band_id: string;
