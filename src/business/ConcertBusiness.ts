@@ -1,6 +1,5 @@
 import { ConcertDatabase } from "../data/ConcertDatabase";
-import { BandInputDTO } from "../model/Band";
-import { Concert, ConcertInputDTO } from "../model/Concert";
+import { ConcertInputDTO, ENUM_DAY } from "../model/Concert";
 import { Authenticator } from "../services/Authenticator";
 import { IdGenerator } from "../services/IdGenerator";
 
@@ -18,13 +17,16 @@ export class ConcertBusiness{
         
         if(!tokenResult){
             throw new Error("token inválido")
+        }     
+        const compareConcert = await concertDatabase.checkTime( input.week_day, input.start_time, input.end_time)
+        
+        if(compareConcert){
+            throw new Error("Show já existente neste horário")
         }
-     
-
         await concertDatabase.createConcert(id, input.week_day, input.start_time, input.end_time, input.band_id  );
     }
 
-    async getConcertByDay(day:string, token:string){
+    async getConcertByDay(day:ENUM_DAY, token:string){
  
      const tokenResult = authenticator.getData(token)
         
