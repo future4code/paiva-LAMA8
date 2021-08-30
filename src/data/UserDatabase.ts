@@ -27,7 +27,7 @@ export class UserDatabase extends BaseDatabase {
     }
   }
 
-  public async getUserByEmail(email: string): Promise<User> {
+  public async getUserByEmailData(email: string): Promise<User> {
     const result = await this.getConnection()
       .select("*")
       .from(UserDatabase.TABLE_NAME)

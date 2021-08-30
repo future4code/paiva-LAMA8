@@ -1,8 +1,10 @@
 import { BandInputDTO } from "../model/Band";
 import { Request, Response } from "express";
 import { BandBusiness } from "../business/BandBusiness";
+import { IdGenerator } from "../services/IdGenerator";
+import { Authenticator } from "../services/Authenticator";
+import { BandDatabase } from "../data/BandDatabase";
 
-const bandBusiness = new  BandBusiness()
 
 export class BandController{
 
@@ -24,6 +26,12 @@ export class BandController{
                 throw new Error("Insira o token de acesso")
             }
            
+            const bandBusiness =
+            new BandBusiness(
+               new IdGenerator(),
+               new Authenticator(),
+               new BandDatabase());
+
             await bandBusiness.create(input, token)    
 
             res.status(200).send(`Banda Registrada com sucesso`);
@@ -47,6 +55,12 @@ export class BandController{
         if(!token){
             throw new Error("Insira o token de acesso")
         }
+
+        const bandBusiness =
+        new BandBusiness(
+           new IdGenerator(),
+           new Authenticator(),
+           new BandDatabase());
 
         const Result = await bandBusiness.getBandById(id, token)
         res.status(200).send(Result)
