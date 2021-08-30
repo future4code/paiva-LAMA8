@@ -3,14 +3,18 @@ import { BandInputDTO } from "../model/Band";
 import { Authenticator } from "../services/Authenticator";
 import { IdGenerator } from "../services/IdGenerator";
 
-        const bandDatabase = new BandDatabase();
-        const authenticator = new Authenticator();
 
 export class BandBusiness{
+    constructor(
+        private idGenerator: IdGenerator,
+        private authenticator: Authenticator,
+        private bandDatabase: BandDatabase
+      ){   
+      }
 
     async create(input:BandInputDTO, token:string){
        
-        const tokenResult = authenticator.getData(token)
+        const tokenResult = this.authenticator.getData(token)
         
         if(!tokenResult){
             throw new Error("token inválido")
@@ -19,20 +23,19 @@ export class BandBusiness{
             throw new Error("Somente administradores podem registrar bandas")
         }
  
-        const idGenerator = new IdGenerator();
-        const id = idGenerator.generate();
+        const id = this.idGenerator.generate();
 
-        await bandDatabase.createBand(id,input.name, input.music_genre, input.responsible);
+        await this.bandDatabase.createBand(id,input.name, input.music_genre, input.responsible);
     }
  
     async getBandById(id:string, token:string){
 
-        const tokenResult = authenticator.getData(token)
+        const tokenResult = this.authenticator.getData(token)
         if(!tokenResult){
             throw new Error("token inválido")
         }
         
-        const Result = bandDatabase.getBandByIdData(id)
+        const Result = this.bandDatabase.getBandByIdData(id)
         return Result
     }
 

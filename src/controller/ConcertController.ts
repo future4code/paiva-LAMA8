@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { ConcertBusiness } from "../business/ConcertBusiness";
+import { ConcertDatabase } from "../data/ConcertDatabase";
 import { Concert, ConcertInputDTO } from "../model/Concert";
+import { Authenticator } from "../services/Authenticator";
+import { IdGenerator } from "../services/IdGenerator";
 
- const concertBusiness = new ConcertBusiness()
 
 export class ConcertController {
 
@@ -36,6 +38,12 @@ export class ConcertController {
             if(!input.week_day){
                 throw new Error("Preencha o dia da semana")
             }
+
+            const concertBusiness =
+            new ConcertBusiness(
+               new IdGenerator(),
+               new Authenticator(),
+               new ConcertDatabase());
              
            await concertBusiness.add(input, token)
 
@@ -61,6 +69,13 @@ export class ConcertController {
             if(!token){
                 throw new Error("Insira o token de acesso")
             }
+
+            const concertBusiness = 
+            new ConcertBusiness(
+               new IdGenerator(),
+               new Authenticator(),
+               new ConcertDatabase());
+
             const result = await concertBusiness.getConcertByDay(day, token)
 
             res.status(200).send(result)
